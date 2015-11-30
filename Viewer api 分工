@@ -1,0 +1,288 @@
+Viewer provides the following javascript functions:
+
+///
+/// Load ebook from server url
+/// App will act as transparent proxy, and provides offline content
+/// if available
+///
+/// @url: string - base url of ebook
+///
+Viewer.loadBook(url)
+=> Already can loadBook by using webView.loadUrl()
+
+
+///
+/// Get current text font scale size
+///
+/// @scale: double - 1.0 is original size
+///
+Viewer.getFontScale() -> scale
+=> Phoebe 
+
+
+///
+/// Set text font scale size
+///
+/// @scale: double - 1.0 is original size
+///
+Viewer.setFontScale(scale)
+=> Phoebe 
+
+///
+/// Get page background color
+///
+/// @[r, g, b] - page background color
+///
+Viewer.getBackgroundColor() -> [r, g, b]
+=> Bruce
+
+
+
+///
+/// Set page background color
+///
+/// @[r, g, b] - page background color
+///
+Viewer.setBackgroundColor([r, g, b])
+=> Bruce
+
+
+///
+/// Get an array of available page layout modes for this book
+///
+/// @mode: string - either "single", "side_by_side" or "continuous"
+///
+Viewer.getAvailableLayoutModes() -> [mode, ...]
+=> HW
+
+///
+/// Get current page layout mode
+///
+/// @mode: string - either "single", "side_by_side" or "continuous"
+///
+Viewer.getLayoutMode() -> mode
+=> HW
+
+///
+/// Set page layout mode
+///
+/// @mode: string - either "single", "side_by_side" or "continuous"
+///
+Viewer.setLayoutMode(mode)
+=> HW
+
+///
+/// Get current position in the ebook
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @cfi: string - epub cfi
+/// @percentage: 0..100 - to represent reading progress
+///
+Viewer.getCurrentPosition() -> [chapter, cfi, percentage]
+=> Louis
+
+///
+/// Goto the given link in this ebook
+///
+/// @link: string - target file link (relative to base url)
+///
+Viewer.gotoLink(link)
+=>Louis
+
+///
+/// Goto the given position in this ebook
+///
+/// @cfi: string - epub cfi
+///
+Viewer.gotoPosition(cfi)
+=> Esther
+
+///
+/// Toggle the bookmark in the current page.
+///
+/// If a valid [r, g, b] is specified, viewer should call App.onAddBookmark
+/// or App.onUpdateBookmark in response.
+///
+/// If null is specified, viewer should call App.onRemoveBookmark in response,
+/// or do nothing if there is currently no bookmark
+///
+/// @color: [r, g, b] or null
+///     [r, g, b] - the bookmark indicator color,
+///     null - to remove current bookmark
+///
+Viewer.toggleBookmark(color)
+=> YF
+
+///
+/// Search text and mark the found text, the search is case-insensitive
+///
+/// @keyword: string or null - the keyword to be found,
+///     or null to cancel all search mark
+/// @mode: either null, "next" or "prev"
+///     null - search keyword from start of current chapter
+///     "next" - search for next occurrence; if the keyword is different or
+///             search is not started yet, then search from current page
+///     "prev" - search for previous occurrence; if the keyword is different or
+///             search is not started yet, then search from current page
+///
+Viewer.searchText(keyword, mode)
+=> Henry
+
+
+
+
+
+
+Application export the following functions to javascript:
+
+///
+/// Notify App current title is changed
+///
+/// @title: string - title to be shown on toolbar
+///
+App.onChangeTitle(title)
+=> Henry
+
+///
+/// Notify App current table of content is changed
+///
+/// @[toc_entry, ...]: array - an json array to the TOC entry
+///
+App.onChangeTOC([toc_entry, ...])
+=> YF
+
+///
+/// Notify App current page is changed to different page
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @cfi: string - epub cfi
+/// @percentage: 0..100 - to represent reading progress
+///
+App.onChangePage(chapter, cfi, percentage)
+=> Henry
+
+///
+/// Notify App user action for tracking
+///
+/// @action: string - tracking "action" as defined in doc
+/// @cfi: string - tracking "cfi" as defined in doc, may be empty for some action
+///
+App.onTrackAction(action, cfi)
+=> Louis
+
+///
+/// Notify App to show or hide toolbar
+///
+/// @visible: bool - set visibility of tool bar
+///
+App.onToggleToolbar(visible)
+=> Louis
+
+///
+/// Request App to load highlights for the chapter, App will call callback in response
+/// The callback will receive an array of json object to represent highlights
+///
+///     function callback([highlight, ...])
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @callback: string - name of callback function (can be object member function)
+///     do not pass function itself, only name (as string) is needed;
+///     and the function must be accessable from global space
+///
+App.onRequestHighlights(chapter, callback)
+=> Esther
+
+///
+/// Notify App the given highlight need to be added, App will call callback in response
+/// The callback will receive the UUID of new highlight just created
+///
+///     function callback(uuid)
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @highlight - an json object to represent highlight, uuid is absent in this case
+/// @callback: string - name of callback function (can be object member function);
+///     do not pass function itself, only name (as string) is needed;
+///     and the function must be accessable from global space
+///
+App.onAddHighlight(chapter, highlight, callback)
+=>Esther
+
+
+///
+/// Notify App the given highlight need to be updated
+///
+/// @highlight - an json object to represent highlight
+///
+App.onUpdateHighlight(highlight)
+=>Esther
+
+///
+/// Notify App the given highlight need to be deleted
+///
+/// @uuid - uuid of the highlight
+///
+App.onRemoveHighlight(uuid)
+=>Esther
+
+///
+/// Notify App the given highlight need to be shared, App will popup sharing dialog
+///
+/// @uuid - uuid of the highlight
+///
+App.onShareHighlight(uuid)
+=>Phoebe
+
+///
+/// Notify App the given highlight need to be annotated, App will popup edit window
+///
+/// @uuid - uuid of the highlight
+///
+App.onAnnotateHighlight(uuid)
+=>Phoebe
+
+///
+/// Request App to load bookmark for the chapter, App will call callback in response
+/// The callback will receive an array of json object to represent bookmarks
+///
+///     function callback([bookmark, ...])
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @callback: string - name of callback function (can be object member function);
+///     do not pass function itself, only name (as string) is needed;
+///     and the function must be accessable from global space
+///
+App.onRequestBookmarks(chapter, callback)
+=>HW
+
+
+///
+/// Notify App the given bookmark need to be added, App will call callback in response
+/// The callback will receive the UUID of new bookmark just created
+///
+///     function callback(uuid)
+///
+/// @chapter: string - an opaque to represent current chapter
+/// @bookmark - an json object to represent bookmark, uuid is absent in this case
+/// @callback: string - name of callback function (can be object member function);
+///     do not pass function itself, only name (as string) is needed;
+///     and the function must be accessable from global space
+///
+App.onAddBookmark(chapter, bookmark, callback)
+=>Bruce
+
+
+///
+/// Notify App the given bookmark need to be updated
+///
+/// @bookmark - an json object to represent bookmark
+///
+App.onUpdateBookmark(bookmark)
+=>HW
+
+///
+/// Notify App the given bookmark need to be deleted
+///
+/// @uuid - uuid of the bookmark
+///
+App.onRemoveBookmark(uuid)
+=>Brcue
